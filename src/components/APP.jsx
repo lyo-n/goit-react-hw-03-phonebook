@@ -17,13 +17,21 @@ export default class APP extends Component {
         filter: "",
     };
     componentDidMount() {
-        const storedContacts = JSON.parse(localStorage.getItem('contacts'));
-        storedContacts && storedContacts.length > 0 && this.setState({ contacts: storedContacts });
+        const contacts = localStorage.getItem('contacts');
+        const parsedContacts = JSON.parse(contacts);
+    
+        if (parsedContacts) {
+          this.setState({ contacts: parsedContacts });
+        }
     }
-    componentDidUpdate(prevProps, prevState) {
-        prevState.contacts !== this.state.contacts &&
-          localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }  
+    componentDidUpdate(prevState) {
+        const nextContacts = this.state.contacts;
+        const prevContacts = prevState.contacts;
+    
+        if (nextContacts !== prevContacts) {
+          localStorage.setItem('contacts', JSON.stringify(nextContacts));
+        }
+    }
     contactAdd = (quest) => {
         const searchName = this.state.contacts.map((ques) => ques.name).includes(quest.name);
         if (searchName) {
